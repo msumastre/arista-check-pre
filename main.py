@@ -1,16 +1,49 @@
-# This is a sample Python script.
+import paramiko
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+def collect_arista_commands(device, username, password):
+    try:
+        # Create an SSH client
+        ssh_client = paramiko.SSHClient()
+        ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+        # Connect to the device
+        ssh_client.connect(device, username=username, password=password, timeout=10)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+        # List of Arista commands to execute
+        arista_commands = [
+            "show version",
+            "show interfaces",
+            # Add more commands as needed
+        ]
 
+        # Open a file for writing the output
+        with open(f"{device}_output.txt", "w") as output_file:
+            # Execute each command and write the output to the file
+            for command in arista_commands:
+                stdin, stdout, stderr = ssh_client.exec_command(command)
+                output_file.write(f"=== {command} ===\n")
+                output_file.write(stdout.read().decode("utf-8"))
+                output_file.write("\n")
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+        print(f"Command output for {device} saved to {device}_output.txt")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    except Exception as e:
+        print(f"Error connecting to {device}: {str(e)}")
+
+    finally:
+        # Close the SSH connection
+        ssh_client.close()
+
+def main():
+    # Prompt the user for device list, username, and password
+    device_list = input("Enter a comma-separated list of devices: ").split(',')
+    username = input("Enter the username: ")
+    password = input("Enter the password: ")
+
+    # Iterate through each device and collect Arista commands
+    for device in device_list:
+        device = device.strip()  # Remove leading/trailing whitespaces
+        collect_arista_commands(device, username, password)
+
+if __name__ == "__main__":
+    main()
