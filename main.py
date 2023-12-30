@@ -12,7 +12,16 @@ def collect_arista_commands(device, username, password):
         # List of Arista commands to execute
         arista_commands = [
             "show version",
-            "show interfaces",
+            "show interface status | no-more",
+            "show lldp neighbors | no-more",
+            "show ip bgp summary | no-more ",
+            "show arp | no-more",
+            "show mac address-table | no-more",
+            "show inventory | no-more",
+            "show port-channel summary",
+            "show vlan | no-more",
+            "show mlag detail | no-more",
+            "show mlag interfaces | no-more",
             # Add more commands as needed
         ]
 
