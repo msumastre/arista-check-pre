@@ -26,7 +26,7 @@ def collect_arista_commands(device, username, password):
         ]
 
         # Open a file for writing the output
-        with open(f"{device}_output.txt", "w") as output_file:
+        with open(f"{device}_check_pre.txt", "w") as output_file:
             # Execute each command and write the output to the file
             for command in arista_commands:
                 stdin, stdout, stderr = ssh_client.exec_command(command)
@@ -34,7 +34,7 @@ def collect_arista_commands(device, username, password):
                 output_file.write(stdout.read().decode("utf-8"))
                 output_file.write("\n")
 
-        print(f"Command output for {device} saved to {device}_output.txt")
+        print(f"Command output for {device} saved to {device}_check_pre.txt")
 
     except Exception as e:
         print(f"Error connecting to {device}: {str(e)}")
